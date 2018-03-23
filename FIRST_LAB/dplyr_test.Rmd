@@ -1,0 +1,73 @@
+---
+title: "dplyr_test"
+author: "Claudio Peroni"
+date: "3/6/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# _dplyr_ test
+
+## Data import
+First we require the package of interest
+```{r}
+require(dplyr)
+```
+
+Then, we import a dataset from the UCI archive (a file in _csv_ format)
+```{r}
+# Data file
+file <- "https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data"
+```
+
+We create the vector of the names of the columns of the data table we are about to create
+```{r}
+# Some sensible variable names
+df_names <- c("age", "wrkclass", "fnlweight", "education_lvl", "edu_score",
+ "marital_status", "occupation", "relationship", "ethnic", "gender",
+ "cap_gain", "cap_loss", "hrs_wk", "nationality", "income")
+```
+
+
+Since the file is in _csv_ format, we have to import the data as a table, and we use as column names the one we have defined in the step above
+```{r}
+# Import the data
+df <- read.csv(file, header = F,
+ sep = ",",
+ na.strings = c(" ?", " ", ""),
+ row.names = NULL,
+ col.names = df_names)
+```
+
+Finally, we can see the result
+```{r}
+head(df)  # Shows the first rows of the data table
+```
+
+## Application of some functions (and piping -- %>%)
+
+First we can check how many duplicate entries are present in our data set
+```{r}
+total_row_n = df %>% nrow()
+
+# Check number of rows without duplicates
+unique_row_n = df %>% distinct() %>% nrow()
+
+duplicate_row_n = total_row_n - unique_row_n
+duplicate_row_n
+```
+
+We can then create a new, clean, data table by removing those `{r duplicate_row_n}` rows
+```{r}
+# Drop duplicate rows and assign to new dataframe object
+df_clean <- df %>% distinct()
+```
+
+
+
+
+
+
