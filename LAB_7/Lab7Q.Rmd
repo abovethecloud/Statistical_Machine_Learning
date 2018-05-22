@@ -1,0 +1,119 @@
+---
+title: "Lab7: Tree-based Methods"
+subtitle: "MAT43 Statistical Machine Learning"
+author: "Silvia Montagna"
+date: "5/22/2018"
+output:
+  pdf_document: default
+  html_document: default
+fontsize: 11pt
+header-includes:
+  - \newcommand{\bY}{\boldsymbol{Y}}
+  - \newcommand{\bX}{\boldsymbol{X}}
+  - \newcommand{\bId}{\boldsymbol{I}}
+  - \newcommand{\bH}{\boldsymbol{H}}
+  - \newcommand{\bE}{\boldsymbol{\epsilon}}
+  - \newcommand{\bb}{\boldsymbol{\beta}}
+  - \newcommand{\bm}{\boldsymbol{\mu}}
+  - \newcommand{\bx}{\boldsymbol{x}}
+  - \newcommand{\e}{\boldsymbol{e}}
+  - \newcommand{\bS}{\boldsymbol{\Sigma}}
+  - \newcommand{\la}{\lambda}
+  - \newcommand{\be}{\begin{equation}}
+  - \newcommand{\en}{\end{equation}}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(arm)
+library(foreign)
+library(magrittr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+# Add libraries
+```
+
+We return to binary regression with the National Election Study data (see Lab 3 for descriptions of some of the variables and initial model fitting). 
+
+[*The following code will read in the data. Remove this text and modify the  code chunk options so that the code does not appear in the output.*]
+
+```{r data}
+# Data are at http://www.stat.columbia.edu/~gelman/arm/examples/nes
+
+nes <- read.dta("nes5200_processed_voters_realideo.dta",
+                   convert.factors = F)
+
+# Filter data to include year, age, income, female, race, white, black, 
+# religion, south, state, region, martial_status, party afilliation
+# (as in LAB3) and ideology (as in LAB3)
+
+nes_clean = nes %>% select(presvote, year, age, income, race, white, black, gender, religion, south, state, region, marital_status, partyid3, ideo) %>%
+  filter(presvote %in% 1:2) %>%
+  mutate(female = gender - 1,
+         black = as.integer(race == 2),
+         vote = as.integer(presvote == 2))
+
+# Remove NA's 
+
+
+# Convert variables that are coded as numerical as factors (state, region, etc.) 
+
+
+# Create a random split 50% sample for test and training
+
+
+# Note the variable state has more than 50 levels. You may decide how to handle
+# this; i.e., assume 1:50 are US and other territories and use 1:50???
+# Just document what you do (states are not sorted alphabetically)
+# Discuss how this limits your modeling
+```
+
+1.  Using the the training data, fit a tree model to the data to predict the probability of voting republican in the election and prune. Comment on the selected tree - which variables are important? Are there interesting interactions? Provide graphics or tables to highlight findings.
+
+```{r, echo = T, eval = T, fig.width = 8, fig.height = 4, fig.align='center'}
+
+```
+
+
+2.  Using the the training data, fit a random forest model to the data to predict the probability of voting Republican in the election.  Comment on the  results - which variables are important?  What insights does the model provide? Support with graphics if possible.
+
+```{r, echo = T, eval = T, fig.width = 8, fig.height = 5, fig.align='center'}
+
+```
+
+
+
+3. Repeat 2, but using boosting.
+
+```{r, echo = T, eval = T, fig.width = 8, fig.height = 5, fig.align='center'}
+
+```
+
+
+4. Repeat 2, but using BART. Comment on any partial dependence plots or other output that is of interest in explaining the model.
+
+```{r, echo = T, eval = T, fig.width = 8, fig.height = 5, fig.align='center', cache = T}
+
+```
+
+
+
+5.  Using `gam` from `mgcv`  fit a generalized additive model to predict the probability of voting Republican using smoothing splines for fitting examining nonlinear functions of the continuous variables.  Are there any interactions that you might expect will be important?
+In `mgcv` you may allow different curves for levels of a factor using the `by` option:
+`race + s(age, by = race)`.  Random intercepts for say `state`, may be obtained via `s(state, bs = "re")`. Using residuals, residual deviance, AIC, or other options find a predictive model that seems to be reasonable for the training data, exploring non-linearity, random intercepts and slopes. Provide a brief description of how you came up with your final model and describe what insights about voting it provides.
+
+```{r}
+
+```
+
+
+
+6. Using the models from 1-5, determine the error rate for each model for predicting on the test data.
+
+```{r, echo = T}
+
+```
+
+7. Provide a summary of your findings. Your comments should address benefits and advantages for the different methods. Which method has the best predictive accuracy? Which provides the most interpretability or insight into quantifying factors? In explaining your findings and insights provide graphs and tables that help quantify uncertainty and illustrate effects of the different characteristics.
+
