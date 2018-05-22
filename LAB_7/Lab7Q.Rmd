@@ -4,8 +4,8 @@ subtitle: "MAT43 Statistical Machine Learning"
 author: "Silvia Montagna"
 date: "5/22/2018"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 fontsize: 11pt
 header-includes:
   - \newcommand{\bY}{\boldsymbol{Y}}
@@ -150,7 +150,10 @@ summary(boost.vote, plotit = T)
 4. Repeat 2, but using BART. Comment on any partial dependence plots or other output that is of interest in explaining the model.
 
 ```{r, echo = T, eval = T, fig.width = 8, fig.height = 5, fig.align='center', cache = T}
-
+library(BayesTree)
+id = which(colnames(train) == "vote" | colnames(train) == "state")
+bart.vote = bart(x.train = train[, -id], y.train = train$vote, x.test = test[, -id], verbose = F)
+plot(bart.vote)
 ```
 
 
