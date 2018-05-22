@@ -163,9 +163,13 @@ In `mgcv` you may allow different curves for levels of a factor using the `by` o
 `race + s(age, by = race)`.  Random intercepts for say `state`, may be obtained via `s(state, bs = "re")`. Using residuals, residual deviance, AIC, or other options find a predictive model that seems to be reasonable for the training data, exploring non-linearity, random intercepts and slopes. Provide a brief description of how you came up with your final model and describe what insights about voting it provides.
 
 ```{r}
-
+library(mgcv)
+set.seed(42)
+gam_vote = gam(vote ~ partyid3 + race + ideo + partyid3:race + partyid3:ideo + s(age, by = ideo) + s(year, bs = "re"))
 ```
 
+e_{ij} \sim N(0, \sigma_j^2)
+y_{ij} = beta_0 + u_j + e_{ij}
 
 
 6. Using the models from 1-5, determine the error rate for each model for predicting on the test data.
