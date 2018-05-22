@@ -97,13 +97,42 @@ library(tree)
 tree.vote = tree(vote ~ . -state, data = train)
 tree.vote
 plot(tree.vote); text(tree.vote, pretty = 10)
-```
 
+# Performance evaluation
+tree.pred = predict(tree.vote, pretty = 10)
+tree.pred = predict(tree.vote, test, type = "class")
+tab1 = table(tree.pred, test$vote)
+CE.tree = (tab1[1, 2] + tab1[2, 1])/sum(tab1)
+CE.tree
+
+
+# Pruning
+cv.vote = cv.tree(tree.vote, FUN = prune.misclass)
+plot(cv.vote)
+prune.vote = prune.misclass(tree.vote, best = 2)
+plot(prune.vote)
+
+# Performance evaluation
+# as above...
+```
+OOB i j
+
+x_i = [partyid3_i, ideo_i]
+x_j = [partyid3_j, ideo_j]
+
+x_i = [partyid3_j, ideo_i]
+x_i = [partyid3_i, ideo_j]
 
 2.  Using the the training data, fit a random forest model to the data to predict the probability of voting Republican in the election.  Comment on the  results - which variables are important?  What insights does the model provide? Support with graphics if possible.
 
 ```{r, echo = T, eval = T, fig.width = 8, fig.height = 5, fig.align='center'}
+suppressMessages(library(randomForest))
+set.seed(42)
+rf.vote = randomForest(vote ~ . -state, data = train, importance = T)
+varImpPlot(rf.vote)
 
+rf.pred = predict(rf.vote, test, type = "class")
+# TODO: comolete
 ```
 
 
