@@ -49,7 +49,7 @@ nes <- read.dta("nes5200_processed_voters_realideo.dta",
 # (as in LAB3) and ideology (as in LAB3)
 
 nes_clean = nes %>%
-  select(presvote, year, age, income, race, white, black, gender, religion, south, state, region, marital_status, partyid3, ideo) %>% 
+  select(presvote, year, age, income, race, white, black, gender, religion, south, state, region, martial_status, partyid3, ideo) %>% 
   filter(presvote %in% 1:2) %>%
   mutate(female = gender - 1,
          black = as.integer(race == 2),
@@ -61,11 +61,28 @@ nes_clean = nes_clean[!is.na(rowSums(nes_clean)), ] %>%
   select(-gender)
 
 # Convert variables that are coded as numerical as factors (state, region, etc.) 
-
+nes_clean = nes_clean %>% mutate(vote = factor(vote),
+                                 year = factor(year),
+                                 female = factor(female),
+                                 race = factor(race),
+                                 white = factor(white),
+                                 black = factor(black),
+                                 religion = factor(religion),
+                                 south = factor(south),
+                                 state = factor(state),
+                                 region = factor(region),
+                                 martial_status = factor(martial_status),
+                                 partyid3 = factor(partyid3),
+                                 ideo = factor(ideo))
 
 # Create a random split 50% sample for test and training
+set.seed(42)
+df = data.frame(nes_clean)
+idx = sample(nrow(df), nrow(df))[1:(nrow(df)/2)]
+train = df[idx, ]
+test = df[-idx, ]
 
-
+test = test[test$partyid3 != 9, ]
 # Note the variable state has more than 50 levels. You may decide how to handle
 # this; i.e., assume 1:50 are US and other territories and use 1:50???
 # Just document what you do (states are not sorted alphabetically)
@@ -75,7 +92,11 @@ nes_clean = nes_clean[!is.na(rowSums(nes_clean)), ] %>%
 1.  Using the the training data, fit a tree model to the data to predict the probability of voting republican in the election and prune. Comment on the selected tree - which variables are important? Are there interesting interactions? Provide graphics or tables to highlight findings.
 
 ```{r, echo = T, eval = T, fig.width = 8, fig.height = 4, fig.align='center'}
-
+set.seed(8675309)
+library(tree)
+tree.vote = tree(vote ~ . -state, data = train)
+tree.vote
+plot(tree.vote); text(tree.vote, pretty = 10)
 ```
 
 
