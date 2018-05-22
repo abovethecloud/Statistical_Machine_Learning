@@ -48,14 +48,17 @@ nes <- read.dta("nes5200_processed_voters_realideo.dta",
 # religion, south, state, region, martial_status, party afilliation
 # (as in LAB3) and ideology (as in LAB3)
 
-nes_clean = nes %>% select(presvote, year, age, income, race, white, black, gender, religion, south, state, region, marital_status, partyid3, ideo) %>%
+nes_clean = nes %>%
+  select(presvote, year, age, income, race, white, black, gender, religion, south, state, region, marital_status, partyid3, ideo) %>% 
   filter(presvote %in% 1:2) %>%
   mutate(female = gender - 1,
          black = as.integer(race == 2),
          vote = as.integer(presvote == 2))
 
 # Remove NA's 
-
+nes_clean = nes_clean[!is.na(rowSums(nes_clean)), ] %>%
+  select(-presvote) %>%
+  select(-gender)
 
 # Convert variables that are coded as numerical as factors (state, region, etc.) 
 
