@@ -140,7 +140,10 @@ rf.pred = predict(rf.vote, test, type = "class")
 3. Repeat 2, but using boosting.
 
 ```{r, echo = T, eval = T, fig.width = 8, fig.height = 5, fig.align='center'}
-
+suppressMessages(library(gbm))
+set.seed(42)
+boost.vote = gbm(I(as.numeric(vote)-1) ~ . -state, data = train, distribution = "bernoulli", n.trees = 5000, interaction.depth = 4)
+summary(boost.vote, plotit = T)
 ```
 
 
